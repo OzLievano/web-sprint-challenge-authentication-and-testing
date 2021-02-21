@@ -17,9 +17,46 @@ afterAll(async ()=>{
 })
 
 describe('server.js',()=>{
-  test('we are in the testing env', ()=>{
+  test('we are in the development env', ()=>{
       expect(process.env.DB_ENV).toBe('development')
   })
+  describe('GET /', ()=>{
+    test('is server running? async', async()=>{
+      const res = await request(server).get('/');
+      expect(res.status).toBe(200);
+    })
+    test('return 200 OK', ()=>{
+      return request(server)
+        .get('/').then(res => {expect(res.status).toBe(200)})
+    })
+  })
+
+  describe('GET /users', ()=>{
+    test('get users working', async()=>{
+      const res = await request(server).get('/api/users')
+      expect(res.status).toBe(200);
+    })
+    test('get /users/id', async()=>{
+      const res = await request(server).get('/api/users/1')
+      expect(res.status).toBe(200);
+    })
+  })
+
+  describe('POST /register',()=>{
+    test('get registration working', async()=>{
+      const newUser = {
+        username:"Big Boy",
+        password:"Little Boy"
+      }
+
+      const res = await request(server).post('/api/auth/register').send(newUser)
+      console.log(res)
+      expect(res.status).toBe(201)
+      expect(res).toBeTruthy
+    })
+  })
 })
+
+
 
 
