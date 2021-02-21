@@ -1,14 +1,27 @@
-module.exports = (req, res, next) => {
-  next();
-  /*
-    IMPLEMENT
+//* Import jsonwebtokens and the secrets
+const jwt = require("jsonwebtoken");
+const secrets = require("../config/secrets");
 
-    1- On valid token in the Authorization header, call next.
+//* Check if user is logged in
+const checkIfLoggedIn = (req, res, next) => {
+  // Authorization: Bearer <token>
+  const token = req.headers?.authorization?.split(" ")[1];
 
-    2- On missing token in the Authorization header,
-      the response body should include a string exactly as follows: "token required".
-
-    3- On invalid or expired token in the Authorization header,
-      the response body should include a string exactly as follows: "token invalid".
-  */
+  if (token) {
+    jwt.verify(token, secrets.jwtSecret, (err, decodedToken) => {
+      if (err) {
+        res.status(401).json({ message: "Invalid token", error: err });
+      } else {
+        req.decodedJWT = decodedToken;
+        next();
+      }
+    });
+  } else {
+    res.status(401).json({ message: "No token found" });
+  }
 };
+
+module.exports = {
+  checkIfLoggedIn
+}
+
