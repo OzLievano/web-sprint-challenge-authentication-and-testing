@@ -22,7 +22,7 @@ router.post('/register', (req, res) => {
     }else{
       Users.create(credentials)
       .then((user)=>{
-        res.status(201).json({data:user})
+        res.status(201).json({user})
       })
       .catch((error)=>{
         res.status(500).json({error:"username taken"})
@@ -106,7 +106,7 @@ router.post('/login', (req, res) => {
 
 function generateToken(user){
   const payload={
-    subject:user.id,
+    id:user.id,
     username:user.username,
   }
 

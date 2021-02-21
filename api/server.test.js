@@ -45,7 +45,7 @@ describe('server.js',()=>{
   describe('POST /register',()=>{
     test('get registration working', async()=>{
       const newUser = {
-        username:"Big Boy",
+        username:"foo",
         password:"Little Boy"
       }
 

@@ -12,12 +12,13 @@ const checkIfLoggedIn = (req, res, next) => {
       if (err) {
         res.status(401).json({ message: "Invalid token", error: err });
       } else {
+        
         req.decodedJWT = decodedToken;
         next();
       }
     });
   } else {
-    res.status(401).json({ message: "No token found" });
+    res.status(401).json({ message: "token required" });
   }
 };
 
