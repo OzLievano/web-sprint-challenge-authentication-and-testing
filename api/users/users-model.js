@@ -6,14 +6,14 @@ module.exports = {
     create
 }
 
-function find(){
-    return db('users');
+async function find(){
+    return await db('users');
 }
 
-function findById(id){
-    return db('users').where({ id })
+async function findById(id){
+    return await db('users').where({ id })
 }
-function create(user){
+async function create(user){
     const [id] = await db('users').insert(user,"id");
     return findById(id)
 }

@@ -1,7 +1,34 @@
+const { JsonWebTokenError } = require('jsonwebtoken');
+
+const bcryptjs = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const Users = require('../users/users-model');
+const { isValid } = require('../users/users-server')
 const router = require('express').Router();
 
+
 router.post('/register', (req, res) => {
-  res.end('implement register, please!');
+  
+  const credentials = req.body;
+
+  if(isValid(credentials)){
+    const rounds = process.env.BCRYPT_ROUNDS || 8;
+    const hash = bcryptjs.hashSync(credentials.password,rounds);
+    credentials.password = hash;
+
+    if(!credentials.username || !credentials.password){
+      res.status(400).json({error:"username and password required"})
+    }else{
+      Users.create(credentials)
+      .then((user)=>{
+        res.status(201).json({data:user})
+      })
+      .catch((error)=>{
+        res.status(500).json({error:"user already exists"})
+      })
+    }
+  }
+
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
